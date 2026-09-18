@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>MUSHAK RUN: BAPPA'S MISSION | 3D Festive Endless Runner</title>
+  <meta name="description" content="Bappa Commands. Mushak Runs. A vibrant 3D endless runner celebrating Ganesh Chaturthi. Run through festive streets, avoid obstacles, collect sacred items, and score high!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;900&family=Outfit:wght@400;600;700;800;900&family=Yatra+One&display=swap" rel="stylesheet">
+  <script type="module" crossorigin src="./assets/index--K0RtFp3.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CF-6uJkN.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- 3D WebGL Canvas Layer -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Floating Background Festive Particle Overlay -->
+    <div id="particle-overlay" class="particle-overlay pointer-events-none"></div>
+
+    <!-- UI Overlay Screens Layer -->
+    <div id="ui-layer">
+
+      <!-- TOP MUTE / AUDIO & PAUSE CONTROLS TOOLBAR -->
+      <div id="quick-audio-bar" class="quick-audio-bar">
+        <div class="audio-btns-cluster">
+          <button id="quick-sound-btn" class="icon-btn" title="Toggle Sound SFX" aria-label="Toggle Sound SFX">
+            <span class="icon">🔊</span>
+          </button>
+          <button id="quick-music-btn" class="icon-btn" title="Toggle Music" aria-label="Toggle Music">
+            <span class="icon">🎵</span>
+          </button>
+        </div>
+        <button id="btn-hud-pause" class="btn-pause-toggle hud-pause-hidden" title="Pause / Continue" aria-label="Pause or Continue Game">
+          <span id="pause-btn-icon" class="pause-icon">⏸</span>
+          <span id="pause-btn-text" class="pause-text">PAUSE</span>
+        </button>
+      </div>
+
+      <!-- SCREEN: ONE-TIME DEVOTEE NAME SETUP (Shown only once on first play) -->
+      <section id="screen-name-setup" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="modal-dialog animate-pop-in name-setup-card">
+          <div class="modal-header">
+            <div class="avatar-ganesha-medium">🐘</div>
+            <h2 class="modal-title">WELCOME DEVOTEE!</h2>
+            <p class="modal-subtitle">Enter your name to begin Mushak's sacred festival mission for Bappa.</p>
+          </div>
+          <form id="form-name-setup" class="name-setup-form" onsubmit="return false;">
+            <div class="input-wrap">
+              <span class="input-icon">👤</span>
+              <input type="text" id="init-player-name-input" class="player-name-input-hero" placeholder="Enter Your Name (e.g. Prameela)" maxlength="22" required autocomplete="off" />
+            </div>
+            <button type="submit" id="btn-submit-initial-name" class="btn btn-primary btn-large pulse-glow w-full">
+              <span>START JOURNEY ▶️</span>
+            </button>
+          </form>
+        </div>
+      </section>
+
+      <!-- SCREEN 1: MAIN MENU -->
+      <section id="screen-main-menu" class="screen-view active">
+        <div class="menu-backdrop"></div>
+        <div class="menu-content">
+          <div class="hero-badge">
+            <span class="badge-icon">🕉️</span>
+            <span class="badge-text">Ganesh Chaturthi Special</span>
+          </div>
+
+          <div class="title-container">
+            <h1 class="game-main-title">
+              <span class="title-sub-gold">BAPPA'S MISSION</span>
+              <span class="title-mushak">MUSHAK RUN</span>
+            </h1>
+            <p class="game-tagline">"Bappa Commands. Mushak Runs."</p>
+          </div>
+
+          <!-- Hero Visual Showcase -->
+          <div class="hero-character-display">
+            <div class="divine-aura-ring"></div>
+            <div class="hero-avatars">
+              <div class="avatar-ganesha" title="Lord Ganesha - The Commander">
+                <span class="avatar-emoji">🐘</span>
+                <span class="avatar-halo">✨</span>
+              </div>
+              <div class="hero-spark">⚡</div>
+              <div class="avatar-mushak" title="Mushak - The Devoted Runner">
+                <span class="avatar-emoji">🐭</span>
+                <span class="avatar-modak">🍬</span>
+              </div>
+            </div>
+            <div class="hero-items-row">
+              <span class="hero-item-pill">🍬 Modaks</span>
+              <span class="hero-item-pill">🪔 Diyas</span>
+              <span class="hero-item-pill">🚩 Flags</span>
+              <span class="hero-item-pill">🌺 Flowers</span>
+            </div>
+          </div>
+
+          <!-- Menu Action Buttons -->
+          <div class="menu-actions">
+            <button id="btn-menu-play" class="btn btn-primary btn-play pulse-glow">
+              <span class="btn-icon">▶️</span>
+              <span class="btn-label">PLAY RUN</span>
+            </button>
+            <div class="menu-secondary-row">
+              <button id="btn-menu-leaderboard" class="btn btn-secondary">
+                <span class="btn-icon">🏆</span>
+                <span>Leaderboard</span>
+              </button>
+              <button id="btn-menu-how-to-play" class="btn btn-secondary">
+                <span class="btn-icon">📜</span>
+                <span>How to Play</span>
+              </button>
+              <button id="btn-menu-settings" class="btn btn-secondary">
+                <span class="btn-icon">⚙️</span>
+                <span>Settings</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="menu-footer">
+            <span id="menu-current-devotee-label" class="current-devotee-pill">Devotee: <strong>Rahul</strong></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 2: GANESHA ORDER BRIEFING -->
+      <section id="screen-order-briefing" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="order-card-wrapper animate-pop-in">
+          <div class="divine-order-header">
+            <div class="ganesha-portrait-box">
+              <div class="ganesha-avatar-large">🐘</div>
+              <div class="ganesha-blessing-rays"></div>
+            </div>
+            <div class="order-header-text">
+              <span class="divine-title">LORD GANESHA'S COMMAND</span>
+              <span id="order-sequence-indicator" class="order-badge">Mission 1 of 7</span>
+            </div>
+          </div>
+
+          <div class="ganesha-speech-bubble">
+            <p id="ganesha-order-dialogue" class="speech-text">
+              "Mushak, bring me the Modaks."
+            </p>
+          </div>
+
+          <div class="order-target-preview">
+            <div class="target-item-card">
+              <div id="target-item-icon" class="target-icon-large">🍬</div>
+              <div class="target-details">
+                <h4 id="target-item-name" class="target-title">Sacred Modaks</h4>
+                <p id="target-item-desc" class="target-desc">Collect delicious golden modaks prepared for Bappa's Puja!</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="order-tips-box">
+            <span class="tip-icon">💡</span>
+            <span class="tip-text">Run as far as you can. Dodge temple carts, drum stacks, and barriers along the street!</span>
+          </div>
+
+          <div class="order-action-footer">
+            <button id="btn-start-run" class="btn btn-primary btn-large pulse-glow">
+              <span class="btn-icon">🚩</span>
+              <span>START RUN!</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 3: GAMEPLAY HUD OVERLAY -->
+      <div id="hud-overlay" class="hud-overlay">
+        <!-- TOP HUD BAR -->
+        <div class="hud-top-bar">
+          <!-- TOP-LEFT: DISTANCE & COLLECTED ITEMS & BAPPA'S ACTIVE ORDER -->
+          <div class="hud-left-group">
+            <div class="hud-box hud-order-box">
+              <div class="hud-box-icon">🐘</div>
+              <div class="hud-box-content">
+                <span class="hud-box-label">BAPPA'S ORDER</span>
+                <span id="hud-order-text" class="hud-order-title">"Bring me the Modaks"</span>
+              </div>
+            </div>
+            <div class="hud-metrics-row">
+              <div class="hud-box hud-distance-box">
+                <span class="hud-distance-icon">📏</span>
+                <div class="hud-metric-col">
+                  <span class="hud-metric-lbl">DISTANCE</span>
+                  <span id="hud-distance-value" class="hud-distance-digits">0 m</span>
+                </div>
+              </div>
+              <div class="hud-box hud-item-box">
+                <span id="hud-item-icon" class="hud-item-icon">🍬</span>
+                <div class="hud-metric-col">
+                  <span class="hud-metric-lbl">COLLECTED</span>
+                  <span id="hud-item-count" class="hud-item-digits">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TOP-CENTER: SCORE & MULTIPLIER -->
+          <div class="hud-center-group">
+            <div class="hud-box hud-score-box">
+              <div class="hud-score-row">
+                <span class="hud-score-label">🏆 SCORE</span>
+                <span id="hud-score-value" class="hud-score-digits">0</span>
+              </div>
+              <div id="hud-multiplier-tag" class="hud-multiplier-tag hidden">2x MULTIPLIER</div>
+            </div>
+          </div>
+
+          <!-- TOP-RIGHT: RESERVED SPACER FOR NON-OVERLAPPING TOOLBAR -->
+          <div class="hud-right-spacer"></div>
+        </div>
+
+        <!-- ACTIVE POWER-UP STATUS BARS (Instant 30s Countdown Display) -->
+        <div id="hud-powerups-container" class="hud-powerups-container">
+          <!-- Dynamically populated power-up cards -->
+        </div>
+
+        <!-- ON-SCREEN MOBILE TOUCH CONTROLS (for touch devices/tablets) -->
+        <div id="touch-controls-bar" class="touch-controls-bar">
+          <button id="btn-touch-left" class="touch-btn touch-left" aria-label="Move Left">◀</button>
+          <div class="touch-vertical-group">
+            <button id="btn-touch-jump" class="touch-btn touch-jump" aria-label="Jump">▲ JUMP</button>
+            <button id="btn-touch-slide" class="touch-btn touch-slide" aria-label="Slide">▼ SLIDE</button>
+          </div>
+          <button id="btn-touch-right" class="touch-btn touch-right" aria-label="Move Right">▶</button>
+        </div>
+      </div>
+
+        <!-- ACTIVE POWER-UP STATUS BARS (Instant 30s Countdown Display) -->
+        <div id="hud-powerups-container" class="hud-powerups-container">
+          <!-- Dynamically populated power-up cards -->
+        </div>
+
+        <!-- ON-SCREEN MOBILE TOUCH CONTROLS (for touch devices/tablets) -->
+        <div id="touch-controls-bar" class="touch-controls-bar">
+          <button id="btn-touch-left" class="touch-btn touch-left" aria-label="Move Left">◀</button>
+          <div class="touch-vertical-group">
+            <button id="btn-touch-jump" class="touch-btn touch-jump" aria-label="Jump">▲ JUMP</button>
+            <button id="btn-touch-slide" class="touch-btn touch-slide" aria-label="Slide">▼ SLIDE</button>
+          </div>
+          <button id="btn-touch-right" class="touch-btn touch-right" aria-label="Move Right">▶</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 4: PAUSE MODAL -->
+      <section id="screen-pause" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="modal-dialog animate-pop-in">
+          <div class="modal-header">
+            <span class="modal-icon">⏸️</span>
+            <h2 class="modal-title">GAME PAUSED</h2>
+          </div>
+          <div class="pause-stats-summary">
+            <div class="stat-pill">
+              <span class="stat-label">Current Score</span>
+              <span id="pause-stat-score" class="stat-val">0</span>
+            </div>
+            <div class="stat-pill">
+              <span class="stat-label">Distance</span>
+              <span id="pause-stat-distance" class="stat-val">0 m</span>
+            </div>
+          </div>
+          <div class="pause-continue-hint">
+            <span class="hint-icon">💡</span>
+            <span>Click <strong>▶ CONTINUE</strong> or press <strong>ESC / P</strong> to resume run</span>
+          </div>
+          <div class="modal-actions-col">
+            <button id="btn-pause-restart" class="btn btn-secondary">
+              <span class="btn-icon">🔄</span>
+              <span>RESTART RUN</span>
+            </button>
+            <button id="btn-pause-menu" class="btn btn-secondary">
+              <span class="btn-icon">🏠</span>
+              <span>MAIN MENU</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 5: GAME OVER MODAL (Automatic Leaderboard Save, No Manual Submit Button) -->
+      <section id="screen-game-over" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="modal-dialog game-over-card animate-pop-in">
+          <div class="game-over-header">
+            <div class="game-over-avatar">🐭💥</div>
+            <h2 class="game-over-title">MUSHAK'S RUN ENDED</h2>
+            <p class="game-over-subtitle">A noble effort for Bappa's festival!</p>
+          </div>
+
+          <!-- Real Final Stats -->
+          <div class="game-over-stats-grid">
+            <div class="go-stat-card highlight">
+              <span class="go-stat-icon">🏆</span>
+              <span class="go-stat-label">FINAL SCORE</span>
+              <span id="go-score-val" class="go-stat-value">0</span>
+            </div>
+            <div class="go-stat-card">
+              <span class="go-stat-icon">🏃</span>
+              <span class="go-stat-label">DISTANCE</span>
+              <span id="go-distance-val" class="go-stat-value">0 m</span>
+            </div>
+            <div class="go-stat-card">
+              <span id="go-item-icon" class="go-stat-icon">🍬</span>
+              <span class="go-stat-label">COLLECTED</span>
+              <span id="go-collected-val" class="go-stat-value">0</span>
+            </div>
+            <div class="go-stat-card">
+              <span class="go-stat-icon">📜</span>
+              <span class="go-stat-label">MISSION ORDER</span>
+              <span id="go-order-val" class="go-stat-value">Modaks</span>
+            </div>
+          </div>
+
+          <!-- Automatic Score Save Status Badge -->
+          <div id="game-over-save-status" class="auto-save-banner">
+            <span id="save-status-icon" class="save-status-icon">✨</span>
+            <span id="save-status-text" class="save-status-text">Score automatically saved to Leaderboard.</span>
+          </div>
+
+          <!-- Next Ganesha Order Advance Teaser -->
+          <div class="next-order-teaser">
+            <div class="teaser-icon">🐘</div>
+            <div class="teaser-text">
+              <span class="teaser-label">NEXT COMMAND FROM BAPPA:</span>
+              <span id="go-next-order-text" class="teaser-dialogue">"Mushak, bring me the Diyas."</span>
+            </div>
+          </div>
+
+          <!-- Action Buttons (No Manual Submit Button) -->
+          <div class="game-over-actions">
+            <button id="btn-go-next-run" class="btn btn-primary btn-large pulse-glow">
+              <span class="btn-icon">▶️</span>
+              <span>PLAY NEXT RUN</span>
+            </button>
+            <div class="go-secondary-btns">
+              <button id="btn-go-leaderboard" class="btn btn-secondary">
+                <span class="btn-icon">🏆</span>
+                <span>Leaderboard</span>
+              </button>
+              <button id="btn-go-menu" class="btn btn-secondary">
+                <span class="btn-icon">🏠</span>
+                <span>Main Menu</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 6: LEADERBOARD MODAL (One Best Score Per Unique Player) -->
+      <section id="screen-leaderboard" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="modal-dialog leaderboard-dialog animate-pop-in">
+          <div class="modal-header flex-between">
+            <div class="header-with-icon">
+              <span class="modal-icon">🏆</span>
+              <h2 class="modal-title">DEVOTEE LEADERBOARD</h2>
+            </div>
+            <button id="btn-leaderboard-refresh" class="btn-icon-circle" title="Refresh Leaderboard">
+              <span>🔄</span>
+            </button>
+          </div>
+          <p class="modal-subtitle">Each devotee's personal best score recorded worldwide.</p>
+
+          <div class="leaderboard-table-container">
+            <table class="leaderboard-table">
+              <thead>
+                <tr>
+                  <th class="col-rank">Rank</th>
+                  <th class="col-player">Player Name</th>
+                  <th class="col-score">Score</th>
+                  <th class="col-distance">Distance</th>
+                </tr>
+              </thead>
+              <tbody id="leaderboard-table-body">
+                <!-- Dynamically populated from backend -->
+              </tbody>
+            </table>
+            <div id="leaderboard-empty-state" class="leaderboard-empty hidden">
+              <span class="empty-icon">🪔</span>
+              <p>No runs recorded yet. Complete a run to be #1 on the Leaderboard!</p>
+            </div>
+            <div id="leaderboard-loading-state" class="leaderboard-loading hidden">
+              <span class="spinner"></span>
+              <p>Loading real leaderboard records...</p>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="btn-leaderboard-back" class="btn btn-secondary btn-large">
+              <span>BACK TO MENU</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 7: HOW TO PLAY MODAL -->
+      <section id="screen-how-to-play" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="modal-dialog how-to-play-dialog animate-pop-in">
+          <div class="modal-header">
+            <span class="modal-icon">📜</span>
+            <h2 class="modal-title">HOW TO PLAY</h2>
+          </div>
+
+          <div class="instructions-scroll">
+            <div class="instruction-card">
+              <div class="instruction-icon">🐘</div>
+              <div class="instruction-content">
+                <h4>1. Follow Bappa's Divine Orders</h4>
+                <p>Lord Ganesha gives Mushak sacred orders (Modaks, Diyas, Flags, Flowers, Puja items). Collect the items requested for the current mission!</p>
+              </div>
+            </div>
+
+            <div class="instruction-card">
+              <div class="instruction-icon">⌨️</div>
+              <div class="instruction-content">
+                <h4>2. Controls & Movement</h4>
+                <div class="controls-grid">
+                  <div class="ctrl-chip"><kbd>◀ / A</kbd> Move Left</div>
+                  <div class="ctrl-chip"><kbd>▶ / D</kbd> Move Right</div>
+                  <div class="ctrl-chip"><kbd>▲ / W / Space</kbd> Jump over Hurdles</div>
+                  <div class="ctrl-chip"><kbd>▼ / S</kbd> Slide under Torans</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="instruction-card">
+              <div class="instruction-icon">⚡</div>
+              <div class="instruction-content">
+                <h4>3. Divine Power-Ups</h4>
+                <div class="powerup-legend-grid">
+                  <div class="p-legend-item">
+                    <span class="p-badge shield">🛡️</span>
+                    <div><strong>Vighna Shield:</strong> Rare divine orb that protects Mushak against collisions for 30s.</div>
+                  </div>
+                  <div class="p-legend-item">
+                    <span class="p-badge magnet">🧲</span>
+                    <div><strong>Modak Magnet:</strong> Pulls nearby sacred collectibles towards Mushak for 30s.</div>
+                  </div>
+                  <div class="p-legend-item">
+                    <span class="p-badge rush">⚡</span>
+                    <div><strong>Mushak Rush:</strong> Invincible high-speed dash through obstacles for 8s.</div>
+                  </div>
+                  <div class="p-legend-item">
+                    <span class="p-badge blessing">✨</span>
+                    <div><strong>Bappa's Blessing:</strong> 2x Score Multiplier & golden divine radiance for 12s.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="instruction-card">
+              <div class="instruction-icon">🏆</div>
+              <div class="instruction-content">
+                <h4>4. Automatic Best-Score Recording</h4>
+                <p>There is no time limit. Run as far as you can! When a run ends, your score is automatically recorded to your personal best on the Leaderboard.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="btn-how-to-back" class="btn btn-secondary btn-large">
+              <span>GOT IT, LET'S PLAY!</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- SCREEN 8: SETTINGS MODAL -->
+      <section id="screen-settings" class="screen-view">
+        <div class="modal-backdrop"></div>
+        <div class="modal-dialog settings-dialog animate-pop-in">
+          <div class="modal-header">
+            <span class="modal-icon">⚙️</span>
+            <h2 class="modal-title">GAME SETTINGS</h2>
+          </div>
+
+          <div class="settings-list">
+            <!-- Edit Devotee Name -->
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Devotee Name</span>
+                <span class="setting-desc">Your player name shown on the Leaderboard</span>
+              </div>
+              <div class="setting-name-edit-box">
+                <input type="text" id="setting-player-name-input" class="player-name-input-settings" placeholder="Your Name" maxlength="22" />
+                <button id="btn-settings-save-name" class="btn btn-accent btn-sm">Save</button>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Sound Effects (SFX)</span>
+                <span class="setting-desc">Jump, slide, collection chimes, collisions</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-sound-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Festive Background Music</span>
+                <span class="setting-desc">Authentic Indian classical Dhol, Tasha & Shehnai</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-music-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <span class="setting-label">Graphics Quality & VFX</span>
+                <span class="setting-desc">Dynamic shadows, lighting and particle effects</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="setting-particles-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button id="btn-settings-back" class="btn btn-secondary btn-large">
+              <span>SAVE & BACK</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOAST NOTIFICATION CONTAINER -->
+      <div id="toast-container" class="toast-container pointer-events-none"></div>
+
+    </div>
+  </div>
+
+</body>
+</html>
